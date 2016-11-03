@@ -123,17 +123,33 @@ def removeCoinc(trgs, tau):
 
     return trgs
 
-def slideCoinc(trgs, tau, dt, dur):
+def slideCoinc(trgs, tau, dt, dur, ind=0):
     """
     perform a cyclic time shift and computes coincs for a list of TrigLists
     assumes time ordered trgs and maintains this
 
+    recurse and pass the index of which TrigList in trgs should be slid.
+    we then slide that by one and then recurse to a lower level to figure out the coincs.
+    At the bottom level, we slide and count coincs without another recursive call.
+    If we sum coincs back up the recursive chain, we should get the total number of coincs
+
     returns the number of coincidences
     """
-    assert dt >= tau, "time slide window must be larger than coinc window"
-    assert dt < dur,  "slide must be smaller than experiment duration"
+    if ind < len(trgs)-1: ### not the last one, so slide list and then recurse
+        count = 0
+        cpTrgs = copy.deepcopy(trgs[ind:]) ### make a copy of everything "below" ind so we don't mess with original trgs throughout the recursion
+        for _ in xrange(int(dur/dt)): ### iterate over slides
+            cpTrgs[0].slide(dt, dur) ### slide the first element
+            count += slideCoinc(trgs[:ind]+cpTrgs, tau, dt, dur, ind=ind+1) ### recurse
+        return count
 
-    raise NotImplementedError
+    else: ### this is the last one, so we just count coincs
+        count = 0
+        cpTrgs = copy.deepcopy(trgs[ind])
+        for _ in xrange(int(dur/dt)): ### iterate over slides
+            cpTrgs.slide(dt, dur) ### slide 
+            count += coinc(trgs[:ind]+[cpTrgs], tau) ### count coincs
+        return count
 
 #-------------------------------------------------
 ### classes to wrap around data
@@ -152,6 +168,11 @@ class Trigger(object):
 class TrigList(list):
     """
     represents a time-ordered series of triggers
+
+    NOTE: be careful with duration because you don't check for sensible input anywhere...
+    duration should be bigger than the largest time of any Trigger in the list.
+
+    you also don't check whether the items are actually Trigger objects...
     """
     def slide(self, dt, dur):
         """
@@ -215,12 +236,18 @@ class Realization(object):
         """
         number of coincidences from all possible time slides keeping zero-lag coincidences with window="tau"
         """
+        assert dt >= tau, "time slide window must be larger than coinc window"
+        assert dt < dur,  "slide must be smaller than experiment duration"
+
         return slideCoinc( copy.deepcopy(self.trgs), tau, dt, self.dur )
         
     def get_nM(self, tau):
         """
         number of coincidences from all possible time slides removing zero-lag coincidences with window="tau"
         """
+        assert dt >= tau, "time slide window must be larger than coinc window"
+        assert dt < dur,  "slide must be smaller than experiment duration"
+
         return slideCoinc( removeCoinc(copy.deepcopy(self.trgs), tau), tau, dt, self.dur )
 
 #------------------------
