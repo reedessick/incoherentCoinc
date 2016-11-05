@@ -506,6 +506,9 @@ class Likelihood(object):
             #------------
             ### nM
             #------------
+
+            raise NotImplementedError('compute mean(nM). Fairly certain the current implementation is *not* correct')
+
             prefact = 1.0
             fact = 1.0
             expn = Ndet*poisson_moment(rateC*tau, 1)
