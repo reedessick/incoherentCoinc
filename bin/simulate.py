@@ -46,7 +46,11 @@ opts, args = parser.parse_args()
 ### instantiate likelihood and realization
 realization = observations.Realization( opts.duration, Ndet=len(opts.rate) )
 likelihood = observations.Likelihood( realization, taus=opts.tau ) 
+
+
 for m in xrange(1, opts.Ntrials+1):
+
+    t0 = time.time()
 
     print "trial : %d"%m
 
@@ -76,5 +80,11 @@ for m in xrange(1, opts.Ntrials+1):
         print "        realization.get_nM : %.6f sec"%(time.time()-to)
 
     to = time.time()
-    print "    vect\t\t %s"%(" ".join("%d"%_ for _ in likelihood.vectorize()))
+    print "    vect\t\t %s"%(" ".join("%6.3f"%_ for _ in likelihood.vectorize()))
     print "        likelihood.vectorize : %.6f sec"%(time.time()-to)
+
+    to = time.time()
+    print "    mean\t\t %s"%(" ".join("%6.3f"%_ for _ in likelihood.means(opts.rateC, opts.rate)))
+    print "        likelihood.means : %.6f sec"%(time.time()-to)
+
+print "%.6f sec"%(time.time()-t0)

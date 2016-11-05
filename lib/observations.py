@@ -128,7 +128,7 @@ def poisson_expect( expr, symbs, cnts ):
         ans = 0.0 ### holder for the answer
         for n, coeff in enumerate(coeffs):
             ### add to this the expectation value of the coefficient * the associated moment of this variable
-            ans += poisson_expect( coeff, symbs[1:], cnts[1:] ) * poissson_moment( cnts[0], dim-n ) 
+            ans += poisson_expect( coeff, symbs[1:], cnts[1:] ) * poisson_moment( cnts[0], dim-n ) 
 
     else: ### we're at the bottom, so just return the expression cast as a float
         ans = float(expr)
@@ -144,11 +144,15 @@ def coinc(trgs, tau):
     find coincs between all triggers in trgs ( list of lists of Triggers )
     assumes triggers are already chronologically ordered
 
+    computes coincidence within [-tau/2, +tau/2] of each trigger
+
     returns the number of coincidences, does not modify trgs
     """
     Ndet = len(trgs)
     Ns = [len(_) for _ in trgs] ### number of triggers in each stream
     inds = [[0,0] for _ in xrange(Ndet-1)] ### the indecies for each stream (besides stream 0, which we treat separately)
+
+    win = 0.5*tau ### this is the actual coincidence window we use
 
     count = 0
     for trg in trgs[0]: ### iterate over triggers in "stream 0", counting the total number of coincs for each
@@ -157,7 +161,7 @@ def coinc(trgs, tau):
         for n, (s, e) in enumerate(inds, 1): ### iterate through the rest of the streams and find the idecies that bracket "t"
             N = Ns[n] ### number of events in "stream n"
 
-            while (s<N) and (trgs[n][s].time < t-tau): ### start is too early, so we bump it
+            while (s<N) and (trgs[n][s].time < t-win): ### start is too early, so we bump it
                 s += 1
 
             if e < s: ### end must be at least as big as the start
@@ -166,11 +170,11 @@ def coinc(trgs, tau):
 
             ### ensure that the start is still a good coinc
             # too large      too far away
-            if (s>=N) or (trgs[n][s].time > t+tau):
+            if (s>=N) or (trgs[n][s].time > t+win):
                 inds[n-1][1] = e ### update end point
                 break ### no good coincs here! so we stop working and move to the next "steam 0" trigger
 
-            while (e+1<N-1) and (trgs[n][e+1].time < t+tau): ### end time is too early
+            while (e+1<N-1) and (trgs[n][e+1].time < t+win): ### end time is too early
                 e += 1
             inds[n-1][1] = e ### update end point
 
@@ -273,10 +277,17 @@ class Trigger(object):
     """
     wrapper around data for a single trigger
     """
-    def __init__(self, time, amp=None, label=None):
+    def __init__(self, time, amp=None, label="None"):
         self.time = time
         self.amp = amp
         self.label = label
+
+    def __str__(self):
+        amp = "%.1f"%self.amp if self.amp!=None else "None"
+        return "Trigger(%.6f, %s, %s)"%(self.time, amp, self.label)
+
+    def __repr__(self):
+        return str(self)
 
 #------------------------
 
@@ -310,23 +321,26 @@ class TrigList(list):
         add in triggers so they're in sequence
         returns a *new* object
         '''
+        N = len(self)
+        M = len(other)
+
         new = TrigList()
         i = 0
         j = 0
-        while (i<len(self)) and (j<len(other)):
-            if self[i].time < self[j].time:
+        while (i<N) and (j<M):
+            if self[i].time < other[j].time:
                 new.append(self[i])
                 i += 1
 
             else:
-                new.append(self[j])
+                new.append(other[j])
                 j += 1
 
-        while i<len(self):
+        while i<N:
             new.append(self[i])
             i += 1
 
-        while j<len(other):
+        while j<M:
             new.append(other[j])
             j += 1
 
@@ -358,9 +372,7 @@ class Realization(object):
 
         s = poisson_series( self.dur, rateC, label='coinc' ) ### coincident stream 
         for d, r in enumerate(rates):
-            strm = poisson_series( self.dur, r, label='det-%d'%d ) + s ### noise in stream "d" and coinc events
-            strm.sort(key=lambda l: l.time)
-            self.trgs[d] = strm
+            self.trgs[d] = poisson_series( self.dur, r, label='det-%d'%d ) + s ### adding operation preserves time ordering
 
     def get_dn(self, n):
         """
@@ -435,7 +447,6 @@ class Likelihood(object):
             self.vector[ind] = self.realization.get_nM(tau, dt)
             ind += 1
 
-        self.vector
         return self.vector
 
     def means(self, rateC, rates):
@@ -476,11 +487,11 @@ class Likelihood(object):
             #------------
             prefact = 1.0
             terms = [rC+r for r in rs] ### the possible terms that are grouped together by the sum
-            for m in xrange(Ndet):
-                prefact *= (N-m) ### increment prefactor
+            for n in xrange(Ndet):
+                prefact *= (N-n) ### increment prefactor
 
                 ans = 0
-                for combo in kPartitions( Ndet, m+1 ): ### all possible partitions of Ndet terms into m groups
+                for combo in kPartitions( Ndet, n+1 ): ### all possible partitions of Ndet terms into m groups
                     term = 1
                     for termInds in combo: ### compute expectation value for each term separately
                         expr = 1
@@ -496,12 +507,17 @@ class Likelihood(object):
             ### nM
             #------------
             prefact = 1.0
-            terms = rs
+            fact = 1.0
+            expn = Ndet*poisson_moment(rateC*tau, 1)
+            for n in xrange(Ndet): ### iterate over detectors and compute 
+                prefact *= (N-n)
+                cnt = poisson_moment(rates[n]*tau, 1)
+                fact *= cnt
+                expn += (Ndet-1)*cnt
 
-            raise NotImplementedError('need to compute mean{nM} for an arbitrary number of detectors')
-            ### fact that we require some counts to be zero means we'll have to rethink this a bit...
-            ### should be easy enough when we compute the poisson_expect to take care of this...
-
+            ### assemble terms
+            m[ind] = prefact*fact*np.exp(-expn) ### NOTE: this assume Poisson distribution when computing exponent...
+                                                ###       we may want to make this more flexible by delegating to a pdf function call?
             ind += 1
 
         return m
