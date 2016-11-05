@@ -484,7 +484,7 @@ class Likelihood(object):
                     term = 1
                     for termInds in combo: ### compute expectation value for each term separately
                         expr = 1
-                        for termInd in termInds:
+                        for termInd in termInds: ### need to assemble expression from combination of indecies
                             expr *= terms[termInd]
                         term *= poisson_expect( expr, symbs, cnts ) ### multiply them together
                     ans += term ### add to total
@@ -495,8 +495,13 @@ class Likelihood(object):
             #------------
             ### nM
             #------------
+            prefact = 1.0
+            terms = rs
+
             raise NotImplementedError('need to compute mean{nM} for an arbitrary number of detectors')
             ### fact that we require some counts to be zero means we'll have to rethink this a bit...
+            ### should be easy enough when we compute the poisson_expect to take care of this...
+
             ind += 1
 
         return m
