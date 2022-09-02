@@ -10,6 +10,8 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
+\usepackage{color}
+
 %-------------------------------------------------
 \begin{document}
 %-------------------------------------------------
@@ -99,8 +101,13 @@ Specifically,
 
 We compute moments of our statistics via
 \begin{equation}
-    \left<f\right> = \prod\limits_i^N\left[ \sum_{a_i}^\infty p(a_i) \sum_{b_i}^\infty p(b_i) \sum_{s_i}^\infty p(s_i) \right] f(a_1, \ldots, a_N, b_1, \ldots, b_N, s_1, \ldots, s_N)
+    \mathrm{E}[f] = \prod\limits_i^N\left[ \sum_{a_i}^\infty p(a_i) \sum_{b_i}^\infty p(b_i) \sum_{s_i}^\infty p(s_i) \right] f(a_1, \ldots, a_N, b_1, \ldots, b_N, s_1, \ldots, s_N)
 \end{equation}
+We then estimate the covariance of statistics via
+\begin{equation}
+    \mathrm{Cov}[fg] = \mathrm{E}[fg] - \mathrm{E}[f]\mathrm{E}[g]
+\end{equation}
+This then produces a basic Gaussian model for the likelihood, which should be reasonably accurate when the signal counts are high (the Poisson distribution approaches a Guassian as $\mu \rightarrow \infty$).
 
 %------------------------
 
@@ -179,62 +186,141 @@ In what follows, we denote expectation values for individual windows (of size $\
 
 %---
 
-
-
-
-
-
-
-
-
-
-
 \begin{align}
     \mathrm{E}[c_+ c_+]
-        & = \cdots
+        & = N \left<(a+s)^2 (b+s)^2\right> \nonumber \\
+        & \quad + N (N-1) [ 2\left<a+s\right>\left<(a+s)(b+s)^2\right> + 2\left<b+s\right>\left<(a+s)^2(b+s)\right> ] \nonumber \\
+        & \quad + N (N-1) (N-2) [ \left<a+s\right>\left<b+s\right>\left<(a+s)(b+s)\right> + \left<a+s\right>^2\left<(b+s)^2\right> \nonumber \\
+        & \quad \quad \quad \quad + \left<a+s\right>\left<b+s\right>\left<(a+s)(b+s)\right> + \left<b+s\right>\left<a+s\right>\left<(a+s)(b+s)\right> \nonumber \\
+        & \quad \quad \quad \quad + \left<b+s\right>^2\left<(a+s)^2\right> + \left<a+s\right>\left<b+s\right>\left<(a+s)(b+s)\right> ] \nonumber \\
+        & \quad + N (N-1) (N-2) (N-3) \left<a+s\right>^2 \left<b+s\right>^2
 \end{align}
 
 %---
 
+
+
+
+
+
+
+
+\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_+ c_0^{(n)}]
-        & = \cdots
+        & = \cdots % see page 11
 \end{align}
+}
+
+
+
+
+
+
 
 %---
 
+
+
+
+
+
+
+
+
+\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_+ c_{-}^{(n)}]
-        & = \cdots
+        & = \cdots % page 15
 \end{align}
+}
+
+
+
+
+
+
+
 
 %---
 
 \begin{align}
     \mathrm{E}[c_0^{(0)} c_0^{(n)}]
-        & = \cdots
+        & = M 2^n \left<(a+s)^2 (b+s)^2\right> \nonumber \\
+        & \quad + M 2^n (2^n-1) [ \left<(a+s)(b+s)\right>\left<(a+s)(b+s)\right> + \left<(a+s)\right>\left<(a+s)(b+s)^2\right> + \left<b+s\right>\left<(a+s)^2(b+s)\right> ] \nonumber \\
+        & \quad + M 2^n (2^n-1) (2^n-2) \left<(a+s)(b+s)\right>\left<a+s\right>\left<b+s\right> \nonumber \\
+        & \quad + M (M-1) 2^n \left<(a+s)(b+s)\right> [ 2^n \left<(a+s)(b+s)\right> + 2^n (2^n-1) \left<a+s\right>\left<b+s\right> ]
 \end{align}
 
 %---
 
 \begin{align}
     \mathrm{E}[c_0^{(0)} c_-^{(n)}]
-        & = \cdots
+        & = M (M-1) (M-2) [2^n \left<(a+s)(b+s)\right>] [2^n \left<a\right> e^{-2^n(\mu_b+\mu_s)}] [2^n \left<b\right> 2^{-2^n(\mu_a+\mu_s)}]
 \end{align}
 
 %---
 
+
+
+
+
+
+
+\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_0^{(n)}]
-        & = \cdots
+        & = \cdots % page 13
 \end{align}
+}
+
+
+
+
+
+
+
+
 
 %---
 
+
+
+
+
+
+
+
+
+\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_-^{(n)}]
-        & = \cdots
+        & = \cdots % page 17
 \end{align}
+}
+
+
+
+
+
+
+
+
+
+%------------------------
+
+\section*{sanity checks}
+\label{sec:checks}
+
+\textcolor{red}{
+\begin{itemize}
+    \item code up expressions
+    \item confirm that covariance matrix is positive definite for any ($\mu_a$, $\mu_b$, $\mu_s$) and multiple values of $n$
+    \item simulate data and confirm predictions match the observed moments; whether skewness affects our estimates significantly
+    \item can we generalize this to the case where we do not perform all possible timeslides?
+    \item how well can we determine background rates, signal rate? does this logic actually apply to searches?
+\end{itemize}
+}
 
 %-------------------------------------------------
 \end{document}
