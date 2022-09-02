@@ -1,0 +1,197 @@
+\documentclass{article}
+
+%-------------------------------------------------
+
+\usepackage{fullpage}
+
+\usepackage{multirow}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+%-------------------------------------------------
+\begin{document}
+%-------------------------------------------------
+
+\section*{basics of Poisson distribution}
+\label{sec:poisson}
+
+The Poisson distribution is defined over the counting numbers ($n$)
+\begin{equation}
+    p(n|\mu) = \frac{\mu^n}{n!}e^{-\mu}
+\end{equation}
+with corresponding moment generating function
+\begin{equation}
+    \left<e^{sn}\right> = \sum\limits_{n=0}^{n=\infty} e^{sn} p(n|\mu) = e^{\mu(e^s - 1)}
+\end{equation}
+so that
+\begin{align}
+    \left<n\right> & = \mu \\
+    \left<n^2\right> & = \mu^2 + \mu \\
+    \left<n^3\right> & = \mu^3 + 3\mu^2 + \mu \\
+    \left<n^4\right> & = \mu^4 + 6\mu^3 + 6\mu^2 + \mu 
+\end{align}
+
+%-------------------------------------------------
+
+\section*{definition of statitics}
+\label{sec:statistics}
+
+We divide the experiment into a sequence of $N$ independent trials, each of duration $\tau$.
+We consider a model with independent (uncorrelated) processes in two detectors ($A$ and $B$) and a third process that appears in both detectors.
+Within each segments ($i$), we then have
+\begin{align}
+    a_i & \sim \textrm{Poisson}(\mu_a = \tau\lambda_a) \\
+    b_i & \sim \textrm{Poisson}(\mu_b = \tau\lambda_b) \\
+    s_i & \sim \textrm{Poisson}(\mu_s = \tau\lambda_s)
+\end{align}
+
+We also consider larger coincidence windows in a dyadic hierarchy ($\tau^{(n)} = 2^n \tau$) with $M = N/2^n$ segments.
+With can then define
+
+\noindent
+count in detector A
+\begin{equation}
+    c_A^{(n)} = \sum\limits_x^M \sum\limits_i^{2^n} (a_{2^n x + i} + s_{2^n x + i})
+\end{equation}
+
+\noindent
+count in detector B
+\begin{equation}
+    c_B^{(n)} = \sum\limits_x^M \sum\limits_i^{2^n} (b_{2^n x + i} + s_{2^n x + i})
+\end{equation}
+
+\noindent
+coincidences in zero-lag
+\begin{equation}
+    c_0^{(n)} = \sum\limits_x^M \left[\sum\limits_i^{2^n} (a_{2^n x + i} + s_{2^n x + i})\right] \left[\sum\limits_j^{2^n} (a_{2^n x + j} + s_{2^n x + j})\right]
+\end{equation}
+
+\noindent
+coincidences from time-slides retaining zero-lag
+\begin{equation}
+    c_+^{(n)} = \sum\limits_x^M \left[ \sum\limits_i^{2^n} (a_{2^n x + i} + s_{2^n x + i})\right] \sum\limits_y^M \left[ \sum\limits_j^{2^n}(b_{2^n y + j} + s_{2^n y + j})\right]
+\end{equation}
+
+\noindent
+coincidences from time-slides after removing zero-lag
+\begin{equation}
+    c_{-}^{(n)} = \sum\limits_x^M \left[ \delta\left(\sum\limits_i^{2^n} (b_{2^n x + i} + s_{2^n x + i}) \right) \sum\limits_j^{2^n} (a_{2^n x + j} + s_{2^n x + j})\right] \sum\limits_y^M \left[ \delta\left(\sum \limits_p^{2^n} (a_{2^n y + p} + s_{2^n y + p})\right) \sum\limits_q^{2^n}(b_{2^n y + q} + s_{2^n y + q})\right]
+\end{equation}
+where
+\begin{equation}
+    \delta(x) = \left\{ \begin{matrix} 1 & x = 0 \\ 0 & x > 0 \end{matrix} \right.
+\end{equation}
+
+We also note that a few of these statistics do not depend on $n$.
+Specifically,
+\begin{align}
+    c_A & = c_A^{(n)} = \sum\limits_i^N (a_i + s_i) \\
+    c_B & = c_B^{(n)} = \sum\limits_i^N (b_i + s_i) \\
+    c_+ & = c_+^{(n)} = \sum\limits_i^N (a_i + s_i) \sum\limits_j^N (b_j + s_j)
+\end{align}
+
+%-------------------------------------------------
+
+\section*{moments}
+\label{sec:moments}
+
+We compute moments of our statistics via
+\begin{equation}
+    \left<f\right> = \prod\limits_i^N\left[ \sum_{a_i}^\infty p(a_i) \sum_{b_i}^\infty p(b_i) \sum_{s_i}^\infty p(s_i) \right] f(a_1, \ldots, a_N, b_1, \ldots, b_N, s_1, \ldots, s_N)
+\end{equation}
+
+%------------------------
+
+\subsection*{first moments}
+\label{sec:first moments}
+
+We compute the first moments of our statistics
+\begin{align}
+    \mathrm{E}[c_A]
+        &= N(\mu_a + \mu_s) \\
+    \mathrm{E}[c_B]
+        & = N(\mu_b + \mu_s) \\
+    \mathrm{E}[c_0^{(n)}]
+        & = M [2^n (\mu_a + \mu_s)] [2^n (\mu_b + \mu_s)] + M 2^n \mu_s \nonumber \\
+        & = N 2^n (\mu_a + \mu_s)(\mu_b + \mu_s) + N \mu_s \\
+    \mathrm{E}[c_+]
+        & = N \mu_s + N^2 (\mu_a + \mu_s) (\mu_b + \mu_s) \\
+    \mathrm{E}[c_{-}^{(n)}]
+         & = M (M-1) [2^n \mu_a] [2^n \mu_b] e^{-2^n (\mu_a + \mu_b + 2\mu_s)} \nonumber \\
+         & = N (N - 2^n) \mu_a \mu_b e^{-2^n (\mu_a + \mu_b + 2\mu_s)}
+\end{align}
+
+%------------------------
+
+\subsection*{second moments}
+\label{sec:second moments}
+
+We then compute the second moments of our statistics.
+We report only a subset of possible combinations as the rest of the combinations can be derived from these expressions.
+
+\begin{align}
+    \mathrm{E}[c_A c_A]
+        & = N \mu_a^2 + N \mu_a
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_A c_B]
+        & = N \mu_s + N^2 (\mu_a + \mu_s)(\mu_b + \mu_s) \\
+        & = E[c_+] \nonumber
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_A c_+]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_A c_0^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_A c_{-}^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_+ c_+]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_+ c_0^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_+ c_{-}^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_0^{(0)} c_0^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_0^{(0)} c_-^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_-^{(0)} c_0^{(n)}]
+        & = \cdots
+\end{align}
+
+\begin{align}
+    \mathrm{E}[c_-^{(0)} c_-^{(n)}]
+        & = \cdots
+\end{align}
+
+%-------------------------------------------------
+\end{document}
+%-------------------------------------------------
