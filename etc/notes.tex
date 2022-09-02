@@ -130,11 +130,16 @@ We compute the first moments of our statistics
 
 We then compute the second moments of our statistics.
 We report only a subset of possible combinations as the rest of the combinations can be derived from these expressions.
+In what follows, we denote expectation values for individual windows (of size $\tau$) with $\left<\cdot\right>$.
+
+%---
 
 \begin{align}
     \mathrm{E}[c_A c_A]
         & = N \mu_a^2 + N \mu_a
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_A c_B]
@@ -142,50 +147,89 @@ We report only a subset of possible combinations as the rest of the combinations
         & = E[c_+] \nonumber
 \end{align}
 
+%---
+
 \begin{align}
     \mathrm{E}[c_A c_+]
-        & = \cdots
+        & = M 2^n \left<(a+s)^2 (b+s)^2\right> \nonumber \\
+        & \quad + M 2^n (2^n-1) \left[ 2\left<a+s\right>\left<(a+s)(b+s)\right> + \left<b+s\right>\left<(a+s)^2\right>\right] \nonumber \\
+        & \quad + M 2^n (2^n-1) (2^n-2) \left<a+s\right>^2 \left<b+s\right> \nonumber \\
+        & \quad + M (M-1) 2^{n+1} \left<a+s\right> \left[ 2^n\left<(a+s)(b+s)\right> + 2^n(2^n-1)\left<a+s\right>\left<b+s\right>\right] \nonumber \\
+        & \quad + M (M-1) 2^{n} \left<b+s\right> \left[ 2^n\left<(a+s)^2\right> + 2^n(2^n-1)\left<a+s\right>^2\right] \nonumber \\
+        & \quad + M (M-1) (M-2) 2^{3n} \left<a+s\right>^2 \left<b+s\right>
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_A c_0^{(n)}]
-        & = \cdots
+        & = M 2^n \left<(a+s)^2(b+s)\right> \nonumber \\
+        & \quad + M 2^n (2^n-1) \left[ 2\left<a+s\right>\left<(a+s)(b+s)\right> + \left<b+s\right>\left<(a+s)^2\right> \right] \nonumber \\
+        & \quad + M 2^n (2^n-1) (2^n-2) \left<a+s\right>^2 \left<b+s\right> \nonumber \\
+        & \quad + M (M-1) [2^n \left<a+s\right>] [2^n \left<(a+s)(b+s)\right> + 2^n (2^n-1) \left<a+s\right>\left<b+s\right>]
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_A c_{-}^{(n)}]
-        & = \cdots
+        & = M (M-1) e^{-2^n(\mu_a + \mu_s)} 2^n \left<b\right> e^{-2^n(\mu_b+\mu_s)} [ 2^n\left<a^2\right> + 2^n (2^n-1)\left<a\right>^2 ] \nonumber \\
+        & \quad + M (M-1) (M-2) 2^n \left<a+s\right> 2^n \left<a\right> e^{-2^n(\mu_b+\mu_s)} 2^n \left<b\right> e^{-2^n(\mu_a+\mu_s)}
 \end{align}
+
+%---
+
+
+
+
+
+
+
+
+
+
 
 \begin{align}
     \mathrm{E}[c_+ c_+]
         & = \cdots
 \end{align}
 
+%---
+
 \begin{align}
     \mathrm{E}[c_+ c_0^{(n)}]
         & = \cdots
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_+ c_{-}^{(n)}]
         & = \cdots
 \end{align}
 
+%---
+
 \begin{align}
     \mathrm{E}[c_0^{(0)} c_0^{(n)}]
         & = \cdots
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_0^{(0)} c_-^{(n)}]
         & = \cdots
 \end{align}
 
+%---
+
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_0^{(n)}]
         & = \cdots
 \end{align}
+
+%---
 
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_-^{(n)}]
