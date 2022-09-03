@@ -198,49 +198,30 @@ In what follows, we denote expectation values for individual windows (of size $\
 
 %---
 
-
-
-
-
-
-
-
-\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_+ c_0^{(n)}]
-        & = \cdots % see page 11
+        & = M 2^n \left<(a+s)^2(b+s)^2\right> + 2^n (2^n-1) ( 2\left<a+s\right>\left<(a+s)(b+s)^2\right> + 2\left<b+s\right>\left<(a+s)^2(b+s)\right> ) \nonumber \\
+        & \quad + M 2^n (2^n-1) (2^n-2) ( 4 \left<a+b\right>\left<b+s\right>\left<(a+s)(b+s)\right> + \left<a+s\right>^2\left<(b+s)^2\right> + \left<b+s\right>\left<(a+s)^2\right> ) \nonumber \\
+        & \quad + M 2^n (2^n-1) (2^n-2) (2^n-3) \left<a+s\right>^2 \left<b+s\right>^2 \nonumber \\
+        & \quad + M (M-1) 2^n \left<a+s\right> 2^n \left<(a+s)(b+s)^2\right> \nonumber \\
+        & \quad + M (M-1) 2^n \left<a+s\right> 2^n(2^n-1)( 2\left<b+s\right>\left<(a+s)(b+s)\right> + \left<a+s\right>\left<(b+s)^2\right> ) \nonumber \\
+        & \quad + M (M-1) 2^n \left<a+s\right> 2^n (2^n-1) (2^n-2) \left<a+s\right>\left<b+s\right>^2 ) \nonumber \\
+        & \quad + M (M-1) 2^n \left<b+s\right> 2^n\left<(a+s)^2(b+s)\right> \nonumber \\
+        & \quad + M (M-1) 2^n \left<b+s\right> 2^n(2^n-1) ( 2\left<a+s\right>\left<(a+s)(b+s)\right> + \left<b+s\right>\left<(a+s)^2\right>) \nonumber \\
+        & \quad + M (M-1) 2^n \left<b+s\right> 2^n (2^n-1) (2^n-2) \left<a+s\right>^2\left<b+s\right> ) \nonumber \\
+        & \quad + M (M-1) ( 2^n \left<(a+s)(b+s)\right> + 2^n(2^n-1)\left<a+s\right>\left<b+s\right>)^2 \nonumber \\
+        & \quad + M (M-1) (M-2) [2^n \left<a+s\right>] [2^n\left<b+s\right>] [2^n\left<(a+s)(b+s)\right> + 2^n(2^n-1)\left<a+s\right>\left<b+s\right>]
 \end{align}
-}
-
-
-
-
-
-
 
 %---
 
-
-
-
-
-
-
-
-
-\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_+ c_{-}^{(n)}]
-        & = \cdots % page 15
+        & = M (M-1) (M-2) 2^n \left<a+s\right> 2^n \left<a\right> e^{-2^n\left<b+s\right>} e^{-2^n\left<a+s\right>}( 2^n\left<b^2\right> + 2^n(2^n-1)\left<b\right>^2 ) \nonumber \\
+        & \quad + M (M-1) (M-2) 2^n \left<b+s\right> 2^n\left<b\right> e^{-2^n\left<a+s\right>} e^{-2^n\left<b+s\right>} ( 2^n\left<a^2\right> + 2^n(2^n-1)\left<a\right>^2 ) \nonumber \\
+        & \quad + M (M-1) (M-2) e^{-2^n\left<b+s\right>} 2^n \left<a\right> e^{-2^n\left<a+s\right>} 2^n \left<b\right> ( 2^n\left<(a+s)(b+s)\right> + 2^n(2^n-1)\left<a+s\right>\left<b+s\right> ) \nonumber \\
+        & \quad + M (M-1) (M-2) (M-3) 2^n \left<a+s\right> 2^n \left<b+s\right> e^{-2^n\left<b+s\right>} 2^n \left<a\right> e^{-2^n\left<a+s\right>} 2^n \left<b\right>
 \end{align}
-}
-
-
-
-
-
-
-
 
 %---
 
@@ -261,51 +242,20 @@ In what follows, we denote expectation values for individual windows (of size $\
 
 %---
 
-
-
-
-
-
-
-\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_0^{(n)}]
-        & = \cdots % page 13
+        & = M (M-1) (M-2) [2^n\left<(a+s)(b+s)\right> + 2^n(2^n-1)\left<a+s\right>\left<b+s\right>] [2^n \left<a\right> e^{-2^n\left<b+s\right>}] [2^n \left<b\right> e^{-2^n\left<a+s\right>}]
 \end{align}
-}
-
-
-
-
-
-
-
-
 
 %---
 
-
-
-
-
-
-
-
-
-\textcolor{red}{
 \begin{align}
     \mathrm{E}[c_-^{(0)} c_-^{(n)}]
-        & = \cdots % page 17
+        & = M (M-1) (M-2) 2^n \left<a\right> e^{-\left<b+s\right>} 2^n \left<a\right> e^{-2^n\left<b+s\right>} ( 2^n\left<b^2\right> + 2^n(2^n-1)\left<b\right>^2 ) 2^{-2^n\left<a+s\right>} \nonumber \\
+        & \quad + M (M-1) (M-2) 2^n \left<b\right> e^{-\left<a+s\right>} 2^n \left<b\right> e^{-2^n\left<a+s\right>} ( 2^n\left<a^2\right> + 2^n(2^n-1)\left<a\right>^2 ) e^{-2^n\left<b+s\right>} \nonumber \\
+        & \quad + M (M-1) (M-2) 2^n \left<a\right> e^{-2^n\left<b+s\right>} 2^n \left<b\right>e^{-2^n\left<a+s\right>} 2^n (2^n-2) \left<a\right> e^{-\left<b+s\right>} \left<b\right> e^{-\left<a+s\right>} \nonumber \\
+        & \quad + M (M-1) (M-2) (M-3) [2^n\left<a\right> e^{-\left<b+s\right>}] [2^n\left<b\right>e^{-\left<a+s\right>}] [2^n\left<a\right>e^{-2^n\left<b+s\right>}] [2^n\left<b\right> e^{-2^n\left<a+s\right>}]
 \end{align}
-}
-
-
-
-
-
-
-
-
 
 %------------------------
 
